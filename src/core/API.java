@@ -2,6 +2,7 @@ package core;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 public class API implements IAPI {
 
@@ -445,29 +446,38 @@ public class API implements IAPI {
 	 */
 	public String GetCrosswordHtml(Boolean includeSolution) {
 		StringBuilder sb = new StringBuilder();
+		ArrayList<String> topic = new ArrayList<String>();
+
 
 		//build grid
 		sb.append(GetCrosswordGridHtml(false));
 		
 		//build clues right
 		sb.append("<table id='clueTable'><tr><td valign='top' style='padding-right:40px'>");
-		sb.append("<p><strong>Across Clues</strong></p>");
+		sb.append("<p><strong>Across Clues</strong><br /><br /> Topic:</p>");
 		
+		topic = getTopicList(TrackWordsRight);
+		
+		for(String build : topic ){
+			sb.append(build + "<br/>");
 		for(PlacedWordTracker t : TrackWordsRight){
 			//file
 			if(Config.InputSource == 0){
 				BigWord bw = Config.FindBigWordInFilteredBigWords(t.getWord());
-				if(bw.hasClue()){
+				
+				if(build.equalsIgnoreCase(bw.getTopic()))
+				if(bw.hasClue() && build.equalsIgnoreCase(bw.getTopic()))
+				{			
 					sb.append(t.getNumber() + ". "  + bw.getClue() + "<br/>");
 				}
-				else{
+				else
+				{
 					sb.append(t.getNumber() + ". No Clue" + "<br/>");
 				}
-			}
-			//gui
-			else{
+				}	else{
 				String clue = Config.GetClueFromManualWordsList(t.getWord());
-				if(clue != null){
+				if(clue != null)
+				{
 					sb.append(t.getNumber() + ". "  + clue + "<br/>");
 				}
 				else{
@@ -475,43 +485,76 @@ public class API implements IAPI {
 				}
 			}
 		}
+		}
 		
 		sb.append("</td><td valign='top'>");
 		
 		//build clues down
-		sb.append("<p><strong>Down Clues</strong></p>");
+		sb.append("<p><strong>Down Clues</strong><br /><br /> Topic: </p>");
 		
+		topic = getTopicList(TrackWordsDown);
+		
+		for(String build : topic ){
+			sb.append(build + "<br/>");
 		for(PlacedWordTracker t : TrackWordsDown){
 			//file
 			if(Config.InputSource == 0){
 				BigWord bw = Config.FindBigWordInFilteredBigWords(t.getWord());
-				if(bw.hasClue()){
+				
+				if(build.equalsIgnoreCase(bw.getTopic()))
+				if(bw.hasClue() && build.equalsIgnoreCase(bw.getTopic()))
+				{			
 					sb.append(t.getNumber() + ". "  + bw.getClue() + "<br/>");
 				}
-				else{
+				else
+				{
 					sb.append(t.getNumber() + ". No Clue" + "<br/>");
 				}
-			}
-			//gui
-			else{
+				}	else{
 				String clue = Config.GetClueFromManualWordsList(t.getWord());
-				if(clue != null){
+				if(clue != null)
+				{
 					sb.append(t.getNumber() + ". "  + clue + "<br/>");
 				}
 				else{
 					sb.append(t.getNumber() + ". No Clue" + "<br/>");
 				}
 			}
+		}
 		}
 		
 		sb.append("</td></tr></table>");
 		
 		if(includeSolution){
 			sb.append("<div class='theSolutionIsHere'>");
+			sb.append("<div class='theClueIshere'>");
 			sb.append(GetCrosswordGridHtml(true));
 			sb.append("</div>");
 		}
 
 		return sb.toString();
 	}
+	
+	
+
+	
+private ArrayList<String> getTopicList(ArrayList<PlacedWordTracker> als)
+{
+	ArrayList<String> tmp = new ArrayList<String>();
+
+	for(PlacedWordTracker t : TrackWordsRight){
+		//file
+		if(Config.InputSource == 0){
+			BigWord bw = Config.FindBigWordInFilteredBigWords(t.getWord());
+			
+			if(!tmp.contains(bw.getTopic()))
+				tmp.add(bw.getTopic());	
+			
+			
+			
+			}
+		}
+	return tmp;
+	}
+
 }
