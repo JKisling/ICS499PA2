@@ -20,4 +20,7 @@ public class PlacedWordTracker {
 	public String getWord(){
 		return word;
 	}
+	public void setNumber(int num){
+		this.number = num;
+	}
 }

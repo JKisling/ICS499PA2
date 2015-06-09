@@ -382,6 +382,7 @@ public class API implements IAPI {
 				}
 			}
 		}
+		setNumbers();
 	}
 	
 	private int GetNumberAtCoordinate(Coordinate coordinate){
@@ -556,5 +557,56 @@ private ArrayList<String> getTopicList(ArrayList<PlacedWordTracker> als)
 		}
 	return tmp;
 	}
+
+
+private void setNumbers() {
+	int numOfWords = TrackWordsRight.size() + TrackWordsDown.size();
+	int number = 1;
+	int col = 0;
+	int row = 0;
+	PlacedWordTracker rightWord = null;
+	PlacedWordTracker downWord = null;
+	
+	for (; row < Grid[0].length; row++)
+		for (col = 0; col < Grid[row].length; col++) {
+			rightWord = getPlacedWordRight(new Coordinate(row,col));
+			downWord = getPlacedWordDown(new Coordinate(row,col));				
+			if(rightWord!=null && downWord != null){
+				rightWord.setNumber(number);
+				downWord.setNumber(number);
+				number++;
+			}
+			else if(rightWord!=null){
+				rightWord.setNumber(number);
+				number++;
+			}
+			else if(downWord!=null){
+				downWord.setNumber(number);				
+				number++;
+			}				
+				
+		}
+
+}
+
+private PlacedWordTracker getPlacedWordRight(Coordinate coordinate) {
+	for (PlacedWordTracker t : TrackWordsRight) {
+		if ((t.getCoordinate().getC() == coordinate.getC())
+				&& (t.getCoordinate().getR() == coordinate.getR())) {
+			return t;
+		}
+	}
+	return null;
+}
+
+private PlacedWordTracker getPlacedWordDown(Coordinate coordinate) {
+	for (PlacedWordTracker t : TrackWordsDown) {
+		if ((t.getCoordinate().getC() == coordinate.getC())
+				&& (t.getCoordinate().getR() == coordinate.getR())) {
+			return t;
+		}
+	}
+	return null;
+}
 
 }
